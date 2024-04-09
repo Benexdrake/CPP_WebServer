@@ -3,6 +3,7 @@
 #include <sstream>
 #include <map>
 #include <winsock2.h>
+#include "Request.cpp"
 
 using namespace std;
 
@@ -11,58 +12,10 @@ using namespace std;
 const int PORT = 8080;
 const int BUFFER_SIZE = 1024;
 
-map<string, string> parseQueryString(const string& queryString) {
-	map<string, string> queryParams;
-
-	istringstream iss(queryString);
-	string pair;
-	while (getline(iss, pair, '&')) {
-		size_t pos = pair.find('=');
-		if (pos != string::npos) {
-			string key = pair.substr(0, pos);
-			string value = pair.substr(pos + 1);
-			queryParams[key] = value;
-		}
-	}
-
-	return queryParams;
-}
-
-void handleRequest(SOCKET clientSocket, const string& request) {
-	string response;
-
-	if (request.find("/hello") != string::npos) {
-
-		size_t queryStart = request.find('?');
-		if (queryStart != string::npos)
-		{
-			size_t queryEnd = request.find(' ', queryStart);
-			string queryString = request.substr(queryStart + 1, queryEnd - queryStart - 1);
-			map<string, string> queryParams = parseQueryString(queryString);
-
-			if (queryParams.count("name") > 0)
-			{
-				string name = queryParams["name"];
-				response = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\nHello, " + name + "!";
-			}
-
-		}
-		else
-			response = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\nHello!";
-	}
-	else if (request.find("/goodbye") != string::npos) {
-		response = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\nGoodbye!";
-	}
-	else {
-		response = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\nHello World!";
-	}
-
-	send(clientSocket, response.c_str(), response.length(), 0);
-}
-
 int main()
 {
 	WSAData wsaData;
+	Request req = Request();
 
 	if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0)
 	{
@@ -121,7 +74,7 @@ int main()
 
 		string request(buffer);
 
-		handleRequest(clientSocket, request);
+		req.handleRequest(clientSocket, request);
 
 		closesocket(clientSocket);
 	}
