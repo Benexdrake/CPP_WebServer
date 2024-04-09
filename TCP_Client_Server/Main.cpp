@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <sstream>
+#include <map>
 #include <winsock2.h>
 
 using namespace std;
@@ -9,6 +10,55 @@ using namespace std;
 
 const int PORT = 8080;
 const int BUFFER_SIZE = 1024;
+
+map<string, string> parseQueryString(const string& queryString) {
+	map<string, string> queryParams;
+
+	istringstream iss(queryString);
+	string pair;
+	while (getline(iss, pair, '&')) {
+		size_t pos = pair.find('=');
+		if (pos != string::npos) {
+			string key = pair.substr(0, pos);
+			string value = pair.substr(pos + 1);
+			queryParams[key] = value;
+		}
+	}
+
+	return queryParams;
+}
+
+void handleRequest(SOCKET clientSocket, const string& request) {
+	string response;
+
+	if (request.find("/hello") != string::npos) {
+
+		size_t queryStart = request.find('?');
+		if (queryStart != string::npos)
+		{
+			size_t queryEnd = request.find(' ', queryStart);
+			string queryString = request.substr(queryStart + 1, queryEnd - queryStart - 1);
+			map<string, string> queryParams = parseQueryString(queryString);
+
+			if (queryParams.count("name") > 0)
+			{
+				string name = queryParams["name"];
+				response = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\nHello, " + name + "!";
+			}
+
+		}
+		else
+			response = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\nHello!";
+	}
+	else if (request.find("/goodbye") != string::npos) {
+		response = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\nGoodbye!";
+	}
+	else {
+		response = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\nHello World!";
+	}
+
+	send(clientSocket, response.c_str(), response.length(), 0);
+}
 
 int main()
 {
@@ -33,7 +83,7 @@ int main()
 	serverAddr.sin_port = htons(PORT);
 
 	if (bind(serverSocket, reinterpret_cast<sockaddr*>(&serverAddr), sizeof(serverAddr)) == SOCKET_ERROR) {
-		std::cerr << "Fehler beim Binden des Sockets" << std::endl;
+		cerr << "Fehler beim Binden des Sockets" << endl;
 		closesocket(serverSocket);
 		WSACleanup();
 		return 1;
@@ -69,19 +119,14 @@ int main()
 			continue;
 		}
 
-		string response = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\nHello, World!";
+		string request(buffer);
 
-		// Antwort an den Client senden
-		int bytesSent = send(clientSocket, response.c_str(), response.length(), 0);
-		if (bytesSent == SOCKET_ERROR) {
-			cerr << "Fehler beim Senden der Antwort" << endl;
-		}
+		handleRequest(clientSocket, request);
 
 		closesocket(clientSocket);
 	}
 
 	closesocket(serverSocket);
-
 	WSACleanup();
 
 	return 0;
