@@ -3,6 +3,7 @@
 #include <sstream>
 #include <map>
 #include <winsock2.h>
+#include <fstream>
 
 using namespace std;
 
@@ -43,16 +44,33 @@ public:
 				{
 					string name = queryParams["name"];
 
-					string json = "{\"message\": \"\Hello " + name + " !\"}";
+					string json = "{\"message\": \"Hello " + name + "111!\"}";
 
 					response = "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\n\r\n" + json;
 				}
 			}
 			else
-				response = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\nHello!";
+			{
+				string json = "{\"message\": \"Hello World !\"}";
+
+				response = "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\n\r\n" + json;
+			}
+
 		}
-		else if (request.find("/goodbye") != string::npos) {
-			response = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\nGoodbye!";
+		else if (request.find("/animes") != string::npos) {
+			ifstream file("./Animes.json");
+			string json = "";
+
+			if (file.is_open())
+			{
+				string line;
+				while (getline(file, line))
+					json += line;
+			response = "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\n\r\n"+json;
+			}
+			else
+				response = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\nNothing to see here";
+
 		}
 		else {
 			response = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\nHello World!";

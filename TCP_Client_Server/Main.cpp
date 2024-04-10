@@ -9,7 +9,7 @@ using namespace std;
 
 #pragma comment(lib,"ws2_32.lib")
 
-const int PORT = 8080;
+const int PORT = 3000;
 const int BUFFER_SIZE = 1024;
 
 int main()
