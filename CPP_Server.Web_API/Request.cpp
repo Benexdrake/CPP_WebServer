@@ -44,7 +44,7 @@ public:
 				{
 					string name = queryParams["name"];
 
-					string json = "{\"message\": \"Hello " + name + "111!\"}";
+					string json = "{\"message\": \"Hello " + name + "!\"}";
 
 					response = "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\n\r\n" + json;
 				}
@@ -66,7 +66,7 @@ public:
 				string line;
 				while (getline(file, line))
 					json += line;
-			response = "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\n\r\n"+json;
+				response = "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\n\r\n" + json;
 			}
 			else
 				response = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\nNothing to see here";

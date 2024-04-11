@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{299e61ed-9d12-481a-b9ec-c1996f65c56d}</ProjectGuid>
-    <RootNamespace>TCPClientServer</RootNamespace>
+    <ProjectGuid>{c6c0c1bc-9306-44b9-8882-54b913d998a6}</ProjectGuid>
+    <RootNamespace>CPPServerWebAPI</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
