@@ -3,7 +3,7 @@
 #include <sstream>
 #include <map>
 #include <winsock2.h>
-#include "Request.cpp"
+#include "Request.h"
 
 using namespace std;
 
@@ -15,7 +15,7 @@ const int BUFFER_SIZE = 1024;
 int main()
 {
 	WSAData wsaData;
-	Request req = Request();
+	Request req;
 
 	if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0)
 	{
@@ -74,7 +74,7 @@ int main()
 
 		string request(buffer);
 
-		req.handleRequest(clientSocket, request);
+		req.requestHandler(clientSocket, request);
 
 		closesocket(clientSocket);
 	}
