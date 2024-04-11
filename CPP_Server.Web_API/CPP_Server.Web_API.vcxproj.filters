@@ -21,9 +21,15 @@
     <ClCompile Include="Request.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="Connector.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Request.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="Connector.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>
